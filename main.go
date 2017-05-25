@@ -13,7 +13,7 @@ const (
 	// declarations
 	a string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	base int = 62	// character's known in 'a'
-	domain_name = "localhost:22222"
+	domain_name = "foxley.co:22222"	// remove port when kube manifest are ready
 	prefix = "http://"
 	sep = "/"
 )
