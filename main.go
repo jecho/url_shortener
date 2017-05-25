@@ -70,7 +70,7 @@ func (env *Env) retrieveEntry(res http.ResponseWriter, req *http.Request) {
 		strconv.Itoa(id)).Scan(&decodedUri)
 
 	if len(decodedUri) == 0 || decodedUri == "" {
-		decodedUri = domain_name + sep + "error"
+		decodedUri = domain_name + sep + "404" + sep
 	}
 	fmt.Println(err)
 	//checkErr(err)
@@ -97,7 +97,7 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/p/{encoded_value}", env.retrieveEntry)
 	r.HandleFunc("/create", env.createEntry).Methods("POST")
-	r.NotFoundHandler = http.HandlerFunc(env.notFound)
+	r.NotFoundHandler = http.Handler(http.StripPrefix("/404", http.FileServer(http.Dir("./static/404/"))))
 
 	log.Fatal(http.ListenAndServe(":22222", r))
 }
