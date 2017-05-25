@@ -1,22 +1,15 @@
 package main
 
 import (
-	"github.com/gorilla/mux"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
-	"encoding/json"
 	"strconv"
+	"github.com/gorilla/mux"
 )
 
 const (
-	// default config values
-	// seperate and gitignore later
-	DB_HOST = "tcp(127.0.0.1:3306)"
-	DB_NAME = "nintendo"
-	DB_USER = "root"
-	DB_PASS = "nintendo"
-
 	// declarations
 	a string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	base int = 62	// character's known in 'a'
@@ -85,22 +78,18 @@ func (env *Env) retrieveEntry(res http.ResponseWriter, req *http.Request) {
 	http.Redirect(res, req, prefix + decodedUri, 301)
 }
 
-func checkErr(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
-	return
-}
-
 func main() {
 
-	dsn := DB_USER + ":" + DB_PASS + "@" + DB_HOST + "/" + DB_NAME
+	// load config from file (remove this in the future, should use kub secret)
+	config := loadConfig(".env/foxley_mock.json")
+
+	dsn := config.DB_USER + ":" + config.DB_PASS + "@" + config.DB_HOST + "/" + config.DB_NAME
 	//db, err := sql.Open("mysql", dsn)
 	db, err := NewDB(dsn)
 	checkErr(err)
 	defer db.Close()
 
-	env := &Env{db}
+	env := &Env{db : db}
 	var version string
 	db.QueryRow("SELECT VERSION()").Scan(&version)
 	fmt.Println("Connected to:", version)
