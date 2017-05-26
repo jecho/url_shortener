@@ -6,8 +6,10 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"github.com/golang/glog"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	"database/sql"
 )
 
 const (
@@ -17,6 +19,7 @@ const (
 	domain_name = "foxley.co:22222" // remove port when kube manifest are ready
 	prefix = "http://"
 	sep = "/"
+	configFile = ".env/foxley_mock.json"
 )
 
 //	default handler
@@ -80,20 +83,26 @@ func (env *Env) retrieveEntry(res http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
-	
+
+	glog.Info("Service is warming up")
 	// load config from file (remove this in the future, should use kub secret)
-	config := loadConfig(".env/foxley_mock.json")
+	config := loadConfig(configFile)
 
 	dsn := config.DB_USER + ":" + config.DB_PASS + "@" + config.DB_HOST + "/" + config.DB_NAME
-	//db, err := sql.Open("mysql", dsn)
 	db, err := NewDB(dsn)
 	checkErr(err)
 	defer db.Close()
 
 	env := &Env{db : db}
+
+	startService(env, db)
+}
+
+func startService(env *Env, db *sql.DB) {
+	glog.Info("Current profile : ", configFile)
 	var version string
 	db.QueryRow("SELECT VERSION()").Scan(&version)
-	fmt.Println("Connected to:", version)
+	glog.Info("Connected to: ", version)
 
 	// CORS; re-review later
 	headersOk := handlers.AllowedHeaders([]string{"Content-Type", "Authorization", "Content-Length", "X-Requested-With"})
@@ -105,6 +114,7 @@ func main() {
 	r.HandleFunc("/create", env.createEntry).Methods("POST")
 	r.NotFoundHandler = http.Handler(http.StripPrefix("/404", http.FileServer(http.Dir("./static/404/"))))
 
+	glog.Info("Service is ready")
 	log.Fatal(http.ListenAndServe(":22222", handlers.CORS(originsOk, headersOk, methodsOk)(r)))
 }
 //
