@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
 
@@ -44,7 +45,7 @@ func (env *Env) createEntry(res http.ResponseWriter, req *http.Request) {
 	// grab the id, encode, and suffix it to domain_name
 	id, err2 := execute.LastInsertId()
 	checkErr(err2)
-	shorterUrl := domain_name + sep + encode(int(id), base, a)
+	shorterUrl := domain_name + sep + "p" + sep + encode(int(id), base, a)
 
 	// return the response
 	res.WriteHeader(http.StatusCreated)
@@ -79,7 +80,7 @@ func (env *Env) retrieveEntry(res http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
-
+	
 	// load config from file (remove this in the future, should use kub secret)
 	config := loadConfig(".env/foxley_mock.json")
 
@@ -94,12 +95,17 @@ func main() {
 	db.QueryRow("SELECT VERSION()").Scan(&version)
 	fmt.Println("Connected to:", version)
 
+	// CORS; re-review later
+	headersOk := handlers.AllowedHeaders([]string{"Content-Type", "Authorization", "Content-Length", "X-Requested-With"})
+	originsOk := handlers.AllowedOrigins([]string{"*"})
+	methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
+
 	r := mux.NewRouter()
 	r.HandleFunc("/p/{encoded_value}", env.retrieveEntry)
 	r.HandleFunc("/create", env.createEntry).Methods("POST")
 	r.NotFoundHandler = http.Handler(http.StripPrefix("/404", http.FileServer(http.Dir("./static/404/"))))
 
-	log.Fatal(http.ListenAndServe(":22222", r))
+	log.Fatal(http.ListenAndServe(":22222", handlers.CORS(originsOk, headersOk, methodsOk)(r)))
 }
 //
 //curl -X POST -H "Content-Type: application/json" -d '{"url":"foxley.co/okay"}' http://127.0.0.1:8080/create -v
