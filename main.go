@@ -13,7 +13,7 @@ const (
 	// declarations
 	a string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	base int = 62	// character's known in 'a'
-	domain_name = "foxley.co:22222"	// remove port when kube manifest are ready
+	domain_name = "foxley.co:22222" // remove port when kube manifest are ready
 	prefix = "http://"
 	sep = "/"
 )
@@ -50,7 +50,7 @@ func (env *Env) createEntry(res http.ResponseWriter, req *http.Request) {
 	res.WriteHeader(http.StatusCreated)
 	if err3 := json.NewEncoder(res).Encode(&Url{
 		shorterUrl,
-		}); err3 != nil {
+	}); err3 != nil {
 		log.Fatal(err)
 	}
 }
