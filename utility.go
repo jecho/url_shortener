@@ -3,21 +3,22 @@ package main
 import (
 	"os"
 	"encoding/json"
-	"log"
+	"github.com/golang/glog"
 )
 
 func checkErr(err error) {
 	if err != nil {
-		log.Fatal(err)
+		glog.Fatal(err)
 	}
 	return
 }
 
 func loadConfig(s string) Config {
-	file, _ := os.Open(s)
+	file, err := os.Open(s)
+	checkErr(err)
 	decoder := json.NewDecoder(file)
 	config := Config{}
-	err := decoder.Decode(&config)
+	err = decoder.Decode(&config)
 	checkErr(err)
 	return config
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -9,7 +10,6 @@ import (
 	"github.com/golang/glog"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	"database/sql"
 )
 
 const (
@@ -29,6 +29,7 @@ func (env *Env) notFound(w http.ResponseWriter, r *http.Request) {
 
 func (env *Env) createEntry(res http.ResponseWriter, req *http.Request) {
 
+	glog.Info("INCOMING POST")
 	// declare content type 'json'
 	res.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
@@ -37,6 +38,7 @@ func (env *Env) createEntry(res http.ResponseWriter, req *http.Request) {
 	decoder := json.NewDecoder(req.Body)
 	error := decoder.Decode(&url)
 	checkErr(error)
+	glog.Info("LOGGING TRANS: ", url)
 
 	// prepare insert statement
 	query, _ := env.db.Prepare("INSERT IGNORE INTO nin SET url=?")
@@ -51,6 +53,7 @@ func (env *Env) createEntry(res http.ResponseWriter, req *http.Request) {
 	shorterUrl := domain_name + sep + "p" + sep + encode(int(id), base, a)
 
 	// return the response
+	glog.Info("LOGGING TRANS: ", shorterUrl)
 	res.WriteHeader(http.StatusCreated)
 	if err3 := json.NewEncoder(res).Encode(&Url{
 		shorterUrl,
@@ -61,6 +64,7 @@ func (env *Env) createEntry(res http.ResponseWriter, req *http.Request) {
 
 func (env *Env) retrieveEntry(res http.ResponseWriter, req *http.Request) {
 
+	glog.Info("INCOMING GET")
 	// declare content type 'json'
 	res.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
@@ -76,9 +80,10 @@ func (env *Env) retrieveEntry(res http.ResponseWriter, req *http.Request) {
 	if len(decodedUri) == 0 || decodedUri == "" {
 		decodedUri = domain_name + sep + "404" + sep
 	}
-	fmt.Println(err)
+	fmt.Print(err)
 	//checkErr(err)
 
+	glog.Info("Redirecting: ", prefix + decodedUri)
 	http.Redirect(res, req, prefix + decodedUri, 301)
 }
 
@@ -99,7 +104,7 @@ func main() {
 }
 
 func startService(env *Env, db *sql.DB) {
-	glog.Info("Current profile : ", configFile)
+	glog.Info("Current config : ", configFile)
 	var version string
 	db.QueryRow("SELECT VERSION()").Scan(&version)
 	glog.Info("Connected to: ", version)
@@ -115,7 +120,7 @@ func startService(env *Env, db *sql.DB) {
 	r.NotFoundHandler = http.Handler(http.StripPrefix("/404", http.FileServer(http.Dir("./static/404/"))))
 
 	glog.Info("Service is ready")
-	log.Fatal(http.ListenAndServe(":22222", handlers.CORS(originsOk, headersOk, methodsOk)(r)))
+	glog.Fatal(http.ListenAndServe(":22222", handlers.CORS(originsOk, headersOk, methodsOk)(r)))
 }
 //
 //curl -X POST -H "Content-Type: application/json" -d '{"url":"foxley.co/okay"}' http://127.0.0.1:8080/create -v
