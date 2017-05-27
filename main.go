@@ -29,7 +29,7 @@ func (env *Env) notFound(w http.ResponseWriter, r *http.Request) {
 
 func (env *Env) createEntry(res http.ResponseWriter, req *http.Request) {
 
-	glog.Info("INCOMING POST")
+	glog.Info("Inbound Traffic: ")
 	// declare content type 'json'
 	res.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
@@ -38,7 +38,7 @@ func (env *Env) createEntry(res http.ResponseWriter, req *http.Request) {
 	decoder := json.NewDecoder(req.Body)
 	error := decoder.Decode(&url)
 	checkErr(error)
-	glog.Info("LOGGING TRANS: ", url)
+	glog.Info(url)
 
 	// prepare insert statement
 	query, _ := env.db.Prepare("INSERT IGNORE INTO nin SET url=?")
@@ -53,7 +53,7 @@ func (env *Env) createEntry(res http.ResponseWriter, req *http.Request) {
 	shorterUrl := domain_name + sep + "p" + sep + encode(int(id), base, a)
 
 	// return the response
-	glog.Info("LOGGING TRANS: ", shorterUrl)
+	glog.Info(shorterUrl)
 	res.WriteHeader(http.StatusCreated)
 	if err3 := json.NewEncoder(res).Encode(&Url{
 		shorterUrl,
@@ -64,7 +64,7 @@ func (env *Env) createEntry(res http.ResponseWriter, req *http.Request) {
 
 func (env *Env) retrieveEntry(res http.ResponseWriter, req *http.Request) {
 
-	glog.Info("INCOMING GET")
+	glog.Info("Outbound Traffic: ")
 	// declare content type 'json'
 	res.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
@@ -104,7 +104,7 @@ func main() {
 }
 
 func startService(env *Env, db *sql.DB) {
-	glog.Info("Current config : ", configFile)
+	glog.Info("Current config: ", configFile)
 	var version string
 	db.QueryRow("SELECT VERSION()").Scan(&version)
 	glog.Info("Connected to: ", version)
