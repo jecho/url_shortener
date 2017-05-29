@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	s "strings"
 	"github.com/golang/glog"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -34,17 +35,29 @@ func (env *Env) createEntry(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	// capture and decode the payload from stream
-	url := new(Url)
+	urlPayload := new(Url)
 	decoder := json.NewDecoder(req.Body)
-	error := decoder.Decode(&url)
+	error := decoder.Decode(&urlPayload)
 	checkErr(error)
-	glog.Info(url)
+
+	// check for http, https, and www, fail other cases, should subsitiute as regex later
+	updatedUrl := urlPayload.Url
+	updatedUrl = s.Replace(updatedUrl, "http://www", "", 1)
+	updatedUrl = s.Replace(updatedUrl, "https://www", "", 1)
+	updatedUrl = s.Replace(updatedUrl, "https://", "", 1)
+	updatedUrl = s.Replace(updatedUrl, "http://", "", 1)
+
+	// check if it really exists?
+	//_, err := url.ParseRequestURI(updatedUrl)
+	//if err != nil {
+	//	glog.Fatal(err)
+	//}
 
 	// prepare insert statement
 	query, _ := env.db.Prepare("INSERT IGNORE INTO nin SET url=?")
 
 	// execute
-	execute, err := query.Exec(url.Url)
+	execute, err := query.Exec(updatedUrl)
 	checkErr(err)
 
 	// grab the id, encode, and suffix it to domain_name
