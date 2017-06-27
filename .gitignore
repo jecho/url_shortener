@@ -1,4 +1,4 @@
 .idea/
-.env/
+.env/*
 main
 !.env/localhost_mock.json
