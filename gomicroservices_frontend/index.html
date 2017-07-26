@@ -34,7 +34,7 @@
 				</div>
 				<div class="container 50%">
 
-					<form id="formoid" method="post" action="http://localhost:22222/create">
+					<form id="formoid" method="post" action="/create">
 						<div class="row uniform">
 							<div class="12u$">
 								<input name="d1" id="d1" value="" placeholder="dump the ingredients here" type="text">
@@ -64,7 +64,7 @@
 					      $.ajax({
 					      	type: 'POST',
 					      	dataType : 'json',
-					      	url: url
+					      	url: url,
 					      	data : data2,
 					      	contentType: 'application/json; charset=UTF-8',
 							success: function(data)

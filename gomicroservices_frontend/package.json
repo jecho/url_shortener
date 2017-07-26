@@ -9,6 +9,8 @@
   "author": "Jecho Ricafrente",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.13.4"
+    "express": "^4.13.4",
+    "request" : "^2.81.0",
+    "body-parser" : "1.17.2"
   }
 }

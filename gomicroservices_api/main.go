@@ -48,4 +48,4 @@ func startService(env *Env) {
 	glog.Fatal(http.ListenAndServe(":22222", handlers.CORS(originsOk, headersOk, methodsOk)(r)))
 }
 //
-//curl -X POST -H "Content-Type: application/json" -d '{"url":"foxley.co/okay"}' http://127.0.0.1:8080/create -v
+//curl -X POST -H "Content-Type: application/json" -d '{"url":"foxley.co/okay"}' http://a6b3114d5723f11e78ea302ddb01ab83-239777298.us-west-2.elb.amazonaws.com/create -v
