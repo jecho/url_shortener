@@ -1,4 +1,4 @@
 .idea/
-.env/*
+gomicroservices_api/.env/*
 main
-!.env/localhost_mock.json
+!gomicroservices_api/.env/localhost_mock.json
