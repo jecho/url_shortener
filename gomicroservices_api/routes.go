@@ -43,7 +43,7 @@ func NewRouter(env *Env) *mux.Router {
 			Handler(route.HandlerFunc)
 	}
 
-	router.NotFoundHandler = http.Handler(http.StripPrefix("/404", http.FileServer(http.Dir("./static/404/"))))
+	router.NotFoundHandler = http.Handler(http.StripPrefix("/404/", http.FileServer(http.Dir("./static/404/"))))
 
 	glog.Info("Routes and Handlers loaded")
 
