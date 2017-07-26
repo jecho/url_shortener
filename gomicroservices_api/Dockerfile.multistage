@@ -6,7 +6,7 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o main .
 
 FROM scratch
 # for testing purposes; use config map from kubernetes cluster
-COPY --from=0 /app/.env/foxley_mock.json /.env/foxley_mock.json
-COPY --from=0 /app/static/* /app/static/
+COPY --from=0 /app/.env/* /.env/
+COPY --from=0 /app/static/404* /static/404/
 COPY --from=0 /app/main .
 CMD ["./main"]
