@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<!--
+	Transit by TEMPLATED
+	templated.co @templatedco
+	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Transit by TEMPLATED</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+		<!--[if lte IE 8]><script src="js/html5shiv.js"></script><![endif]-->
+		<script src="js/jquery.min.js"></script>
+		<script src="js/skel.min.js"></script>
+		<script src="js/skel-layers.min.js"></script>
+		<script src="js/init.js"></script>
+		<noscript>
+			<link rel="stylesheet" href="css/skel.css" />
+			<link rel="stylesheet" href="css/style.css" />
+			<link rel="stylesheet" href="css/style-xlarge.css" />
+		</noscript>
+	</head>
+	<body class="landing" style="background-color:#3cadd4">
+		<!-- Three -->
+			<section id="three" class="wrapper style3 special">
+				<div class="container">
+					<header class="major">
+						<br><br><br>
+						<h2>Magic Portal of Shortening</h2>
+						<p>The intellect of the wise is like glass; it admits the link through the glass and reflects on its shortening.</p>
+					</header>
+				</div>
+				<div class="container 50%">
+
+					<form id="formoid" method="post" action="http://localhost:22222/create">
+						<div class="row uniform">
+							<div class="12u$">
+								<input name="d1" id="d1" value="" placeholder="dump the ingredients here" type="text">
+							</div>
+							<div class="12u$">
+								<textarea id="showresults" placeholder="the pudding is picked up here" rows="6"></textarea>
+							</div>
+							<div class="12u$">
+								<ul>
+									<input value="Send Message" class="special big" type="submit">
+								</ul>
+							</div>
+						</div>
+					</form>
+
+					<script type='text/javascript'>
+					    /* attach a submit handler to the form */
+					    $("#formoid").submit(function(event) {
+					      /* stop form from submitting normally */
+					      event.preventDefault();
+					      /* get the action attribute from the <form action=""> element */
+					      var $form = $( this ), url = $form.attr( 'action' );
+
+					      var data = { 'url' : $('#d1').val() }
+					      var data2 = JSON.stringify(data)
+
+					      $.ajax({
+					      	type: 'POST',
+					      	dataType : 'json',
+					      	url: url
+					      	data : data2,
+					      	contentType: 'application/json; charset=UTF-8',
+							success: function(data)
+								{	
+            						$('#showresults').val(JSON.stringify(data));
+							    },
+							    error: function (data)
+							    {
+							 		$('#showresults').val(JSON.stringify(data));
+							    }
+					      });
+					      					      
+					    });
+					</script>
+				</div>
+			</section>
+
+	</body>
+</html>
