@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: foxley-redis
+data:
+  REDIS_SERVICE: gomicroservices-redis-service
+  PASSWORD: 
+  DB: 0

@@ -84,6 +84,15 @@ func (env *Env) retrieveEntry(res http.ResponseWriter, req *http.Request) {
 	fmt.Print(err)
 	//checkErr(err)
 
-	glog.Info("Redirecting: ", prefix + decodedUri)
-	http.Redirect(res, req, prefix + decodedUri, 301)
+	// return the response
+	glog.Info("Decoded Contents: ", prefix + decodedUri)
+	res.WriteHeader(http.StatusCreated)
+	if err3 := json.NewEncoder(res).Encode(&Url{
+		prefix + decodedUri,
+	}); err3 != nil {
+		glog.Fatal(err)
+	}
+
+	//glog.Info("Redirecting: ", prefix + decodedUri)
+	//http.Redirect(res, req, prefix + decodedUri, 301)
 }

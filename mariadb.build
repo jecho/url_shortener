@@ -1,0 +1,13 @@
+SET PASSWORD FOR 'root' = Password('my-secret-pw')
+
+CREATE DATABASE spellweaver;
+
+USE spellweaver;
+
+CREATE TABLE nin (
+ID INT NOT NULL AUTO_INCREMENT,
+URL VARCHAR (255)     NOT NULL,
+PRIMARY KEY (ID)
+);
+
+COMMIT;

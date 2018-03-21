@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gomicroservices-gateway-service
+spec:
+  ports:
+  - port: 80
+    targetPort: 8080
+    name: http
+  selector:
+    name: gomicroservices-gateway-pod
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: gomicroservices-gateway
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        name: gomicroservices-gateway-pod
+    spec:
+      containers:
+      - name: gomicroservices-gateway-container
+        image: 696251787677.dkr.ecr.us-west-2.amazonaws.com/foxley/gomicroservices-gateway:latest
+        env:
+        - name: REDIS_SERVICE
+          valueFrom:
+            configMapKeyRef:
+              name: foxley-gateway
+              key: REDIS_SERVICE
+        - name: MARIADB_SERVICE
+          valueFrom:
+            configMapKeyRef:
+              name: foxley-gateway
+              key: MARIADB_SERVICE
+        ports:
+        - containerPort: 8080

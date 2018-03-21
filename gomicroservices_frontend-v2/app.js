@@ -9,8 +9,8 @@ const port = 80;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended : true }));
 
-app.use('/', express.static('.'));
-app.use('/404', express.static('./static/404'));
+app.use('/', express.static('./build'));
+app.use('/404', express.static('./src/404'));
 
 app.post('/create', function (req, rez) {
 

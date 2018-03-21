@@ -3,3 +3,4 @@ gomicroservices_api/.env/*
 main
 !gomicroservices_api/.env/localhost_mock.json
 gomicroservices_redis/*
+foxley-mariadb-configmap.yaml

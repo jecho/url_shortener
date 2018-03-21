@@ -23,6 +23,9 @@ spec:
     spec:
       containers:
       - name: gomicroservices-frontend-container
-        image: 696251787677.dkr.ecr.us-west-2.amazonaws.com/foxley/gomicroservices_frontend:latest
+        image: 696251787677.dkr.ecr.us-west-2.amazonaws.com/foxley/gomicroservices_frontend-v2:alpha1
+        env:
+        - name: GATEWAY_SERVICE
+          value: gomicroservices-gateway-service
         ports:
         - containerPort: 80
